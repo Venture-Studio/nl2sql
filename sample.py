@@ -92,7 +92,7 @@ if prompt := st.chat_input():
       db = _mysql.connect(
         host=os.environ["HOST"],
         user=os.environ["USER"],
-        password=os.environ["password"],
+        password=os.environ["PASSWORD"],
         database="employees",
         conv={
           FIELD_TYPE.LONG:str,
