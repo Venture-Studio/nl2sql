@@ -4,7 +4,6 @@ from openai import OpenAI
 import streamlit as st
 from MySQLdb import _mysql
 from MySQLdb.constants import FIELD_TYPE
-import datetime
 import pandas as pd
 import numpy as np
 
