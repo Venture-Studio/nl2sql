@@ -1,4 +1,5 @@
 import json
+import os
 from openai import OpenAI
 import streamlit as st
 from MySQLdb import _mysql
@@ -90,9 +91,9 @@ if prompt := st.chat_input():
       st.chat_message("assistant").write(sql)  
       
       db = _mysql.connect(
-        host="localhost",
-        user="root",
-        password="",
+        host=os.environ["HOST"],
+        user=os.environ["USER"],
+        password=os.environ["password"],
         database="employees",
         conv={
           FIELD_TYPE.LONG:str,
@@ -112,7 +113,9 @@ if prompt := st.chat_input():
           FIELD_TYPE.LONGLONG:str,
           FIELD_TYPE.MEDIUM_BLOB:str,
           FIELD_TYPE.NEWDECIMAL:str,
-          FIELD_TYPE.ENUM:str
+          FIELD_TYPE.ENUM:str,
+          FIELD_TYPE.CHAR:str,
+          FIELD_TYPE.SET:str
         }
       )
 
