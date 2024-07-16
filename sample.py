@@ -92,9 +92,9 @@ if prompt := st.chat_input():
       st.chat_message("assistant").write(sql)  
       
       db = _mysql.connect(
-        host=os.getenv("HOST"), 
-        user=os.getenv("USERNAME"),
-        password=os.getenv("PASSWORD"),
+        host=os.getenv("HOST") or os.environ["HOST"], 
+        user=os.getenv("USERNAME") or os.environ["USERNAME"],
+        password=os.getenv("PASSWORD") or os.environ["PASSWORD"],
         database="employees",
         conv={
           FIELD_TYPE.LONG:str,
