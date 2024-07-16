@@ -1,0 +1,5 @@
+MySQL-python==1.2.5
+numpy==2.0.0
+openai==1.35.14
+pandas==2.2.2
+streamlit==1.36.0

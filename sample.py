@@ -11,7 +11,7 @@ st.title("SQL Bot")
 st.caption("A SQL chatbot")
 
 if "messages" not in st.session_state:
-    st.session_state["messages"] = [{"role": "assistant", "content": "Ask me questions about Employee Data!"}]
+    st.session_state["messages"] = [{"role": "assistant", "content": "Ask me questions about Employee Data! Try commands like \"Show me the tables\" and \"Show me the columns for table X\""}]
 
 for msg in st.session_state.messages:
     st.chat_message(msg["role"]).write(msg["content"])
