@@ -6,6 +6,9 @@ from MySQLdb import _mysql
 from MySQLdb.constants import FIELD_TYPE
 import pandas as pd
 import numpy as np
+from dotenv import load_dotenv
+
+load_dotenv()
 
 st.title("SQL Bot")
 st.caption("A SQL chatbot")
@@ -22,7 +25,6 @@ if prompt := st.chat_input():
     st.session_state.messages.append({"role": "user", "content": prompt})
     st.chat_message("user").write(prompt)
     
-
     sql = 'NOTHING'
     with open('employees_structure.sql', 'r') as file:
         sql = file.read().replace('\n', '')
@@ -90,9 +92,9 @@ if prompt := st.chat_input():
       st.chat_message("assistant").write(sql)  
       
       db = _mysql.connect(
-        host=os.environ["HOST"],
-        user=os.environ["USER"],
-        password=os.environ["PASSWORD"],
+        host=os.getenv("HOST"), 
+        user=os.getenv("USERNAME"),
+        password=os.getenv("PASSWORD"),
         database="employees",
         conv={
           FIELD_TYPE.LONG:str,
