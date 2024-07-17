@@ -127,9 +127,13 @@ if prompt := st.chat_input():
       rows = result.fetch_row(maxrows=0,how=1)
       column_labels = []
       row_values = []
-      st.chat_message("assistant").write(f"Query returned with {row_count} row(s) and {column_count} column(s).") 
+      row_limit = 100
+      st.chat_message("assistant").write(f"Query returned with {row_count} row(s) and {column_count} column(s)." + f" Showing top {row_limit} rows only." if row_count > row_limit else "") 
 
       for i, x in enumerate(rows):
+        if i >= row_limit:
+          break
+        
         print(x)
         row = []
         for k in x:
@@ -140,4 +144,7 @@ if prompt := st.chat_input():
         row_values.append(row)
       print(row_values) 
       df = pd.DataFrame(row_values, columns=column_labels)
-      st.table(df)
+      st.session_state.messages.append({"role": "assistant", "content": df})
+      st.chat_message("assistant").write(df)  
+
+      #st.table(df)
