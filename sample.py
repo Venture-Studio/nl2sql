@@ -7,6 +7,8 @@ from MySQLdb.constants import FIELD_TYPE
 import pandas as pd
 import numpy as np
 from dotenv import load_dotenv
+import matplotlib.pyplot as plt
+
 
 load_dotenv()
 
@@ -150,4 +152,62 @@ if prompt := st.chat_input():
         df = pd.DataFrame(row_values, columns=column_labels)
         st.session_state.messages.append({"role": "assistant", "content": df})
         st.chat_message("assistant").write(df)
+        
+        st.chat_message("assistant").write("Generating Image ... ")
+
+        #Image Generation
+        response = client.chat.completions.create(
+          model="gpt-4o",
+          messages=[
+            {
+              "role": "system",
+              "content": "You are an expert at Matplotlib. You are also an expert in data visualization."
+            },
+            {
+              "role": "user",
+              "content": f"""Provide me with matplotlib parameters based on the three inputs that I give you. 
+              First input is the request the user made. It will give you context on names and labels. 
+              Second input is the data.
+              Third input is the data labels.
+              <request>{prompt}</request>
+              <data>{row_values}</data>
+              <labels>{column_labels}</labels>
+              Respond back to me in JSON format with the following data attributes for Matplotlib:
+              {{
+                "labels": ["An array of labels"],
+                "data": ["An array of the data values to be shown"],
+                "xlabel": "The x label",
+                "ylabel" : "The y label",
+                "title": "The title"
+              }}
+              """ 
+            }
+          ],
+          temperature=0.4,
+          top_p=1,
+          response_format={ "type": "json_object" }
+        )
       
+        response = response.choices[0].message.content
+        
+        try:
+          response = json.loads(response)
+          # Creating the histogram
+          plt.figure(figsize=(10, 6))
+          plt.bar(response["labels"], response["data"], color='blue')
+          plt.xlabel(response["xlabel"])
+          plt.ylabel(response["ylabel"])
+          plt.title(response["title"])
+          plt.xticks(rotation=45, ha='right')
+          plt.tight_layout()
+
+          # Display the plot
+          st.pyplot(plt)
+          plt.show()
+          
+        except Exception as e:
+          print(e)
+          st.chat_message("assistant").write("Bad OpenAI Response:")  
+          st.chat_message("assistant").write(response) 
+          print(response)
+          exit()
