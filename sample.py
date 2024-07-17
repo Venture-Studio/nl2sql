@@ -128,23 +128,26 @@ if prompt := st.chat_input():
       column_labels = []
       row_values = []
       row_limit = 100
-      st.chat_message("assistant").write(f"Query returned with {row_count} row(s) and {column_count} column(s)." + f" Showing top {row_limit} rows only." if row_count > row_limit else "") 
+      
+      if row_count == 0:
+        st.chat_message("assistant").write("Query returned but there is no data to report.")
+      else:
+        st.chat_message("assistant").write((f"Query returned with {row_count} row(s) and {column_count} column(s).") + (f" Showing top {row_limit} rows only." if row_count > row_limit else "")) 
 
-      for i, x in enumerate(rows):
-        if i >= row_limit:
-          break
-        
-        print(x)
-        row = []
-        for k in x:
-          if i == 0:
-            # Get Column Labels
-            column_labels.append(k)
-          row.append(x[k])
-        row_values.append(row)
-      print(row_values) 
-      df = pd.DataFrame(row_values, columns=column_labels)
-      st.session_state.messages.append({"role": "assistant", "content": df})
-      st.chat_message("assistant").write(df)  
-
-      #st.table(df)
+      if row_count > 0:
+        for i, x in enumerate(rows):
+          if i >= row_limit:
+            break
+          
+          print(x)
+          row = []
+          for k in x:
+            if i == 0:
+              # Get Column Labels
+              column_labels.append(k)
+            row.append(x[k])
+          row_values.append(row)
+        df = pd.DataFrame(row_values, columns=column_labels)
+        st.session_state.messages.append({"role": "assistant", "content": df})
+        st.chat_message("assistant").write(df)
+      
